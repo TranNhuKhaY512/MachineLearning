@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Trợ lý Y tế ảo</title>
+  <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+  <div class="app">
+    <header class="app__header" role="banner">
+      <div class="header__brand" aria-label="Bệnh viện">
+        <span class="brand__logo" aria-hidden="true">🏥</span>
+        <div class="brand__text">
+          <h1 class="brand__title">Trợ lý Y tế ảo</h1>
+          <p class="brand__subtitle">Hỗ trợ bệnh nhân và người nhà 24/7</p>
+        </div>
+        <div class="header__tools">
+          <button id="themeToggle" class="chip" aria-label="Chuyển chế độ sáng/tối">🌙</button>
+        </div>
+      </div>
+    </header>
+
+    <main class="chat" role="main" aria-live="polite">
+      <ul id="chatbox" class="chat__messages" aria-label="Lịch sử trò chuyện"></ul>
+      <div id="typing" class="typing" aria-hidden="true">
+        <span class="typing__avatar" aria-hidden="true">🤖</span>
+        <span class="typing__dots" aria-label="AI đang nhập">●●●</span>
+      </div>
+    </main>
+
+    <footer class="composer" role="contentinfo">
+      <div class="composer__inner">
+        <label for="input" class="sr-only">Nhập tin nhắn</label>
+        <textarea id="input" class="composer__input" rows="1" placeholder="Nhập câu hỏi, triệu chứng hoặc ID bệnh nhân..." aria-label="Trường nhập tin nhắn"></textarea>
+        <button id="send" class="composer__send" aria-label="Gửi tin nhắn">
+          <span aria-hidden="true">Gửi</span>
+        </button>
+      </div>
+      <div class="composer__row">
+        <p class="composer__hint">Không chia sẻ thông tin nhạy cảm. Dành cho mục đích hỗ trợ, không thay thế tư vấn bác sĩ.</p>
+        <div class="composer__tools">
+          <button id="clear" class="link">Xóa lịch sử</button>
+        </div>
+      </div>
+    </footer>
+  </div>
+
+  <script src="{{ url_for('static', filename='script.js') }}"></script>
+  <noscript>Trình duyệt của bạn cần bật JavaScript để sử dụng trợ lý.</noscript>
+  <div class="sr-only" aria-live="assertive" aria-atomic="true" id="a11y-live"></div>
+  <div class="sr-only" id="screen-reader-hints">Nhấn Enter để gửi. Nhấn Shift+Enter để xuống dòng.</div>
+  <script>
+    document.getElementById('input').setAttribute('aria-describedby', 'screen-reader-hints');
+  </script>
+  
+  <!-- Modal nhập ID -->
+  <div id="idModal" class="modal" role="dialog" aria-modal="true" aria-labelledby="idModalTitle" aria-hidden="true">
+    <div class="modal__dialog">
+      <h2 id="idModalTitle" class="modal__title">Nhập ID bệnh nhân</h2>
+      <p class="modal__desc">Vui lòng nhập số ID bệnh nhân để xem thông tin và nhận tư vấn.</p>
+      <label class="sr-only" for="idInput">ID bệnh nhân</label>
+      <input id="idInput" class="modal__input" type="text" inputmode="numeric" pattern="[0-9]*" placeholder="Ví dụ: 12" />
+      <div class="modal__actions">
+        <button id="idCancel" class="chip" aria-label="Hủy">Hủy</button>
+        <button id="idSubmit" class="composer__send" aria-label="Gửi ID">Xác nhận</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Modal bệnh nhân mới -->
+  <div id="newModal" class="modal" role="dialog" aria-modal="true" aria-labelledby="newModalTitle" aria-hidden="true">
+    <div class="modal__dialog">
+      <h2 id="newModalTitle" class="modal__title">Thông tin bệnh nhân mới</h2>
+      <p class="modal__desc">Nhập thông tin cơ bản để tính nguy cơ tái nhập viện.</p>
+      <div class="modal__grid">
+        <label class="sr-only" for="newName">Tên</label>
+        <input id="newName" class="modal__input" type="text" placeholder="Tên (tuỳ chọn)" />
+        <label class="sr-only" for="newAge">Tuổi</label>
+        <input id="newAge" class="modal__input" type="number" min="0" max="120" placeholder="Tuổi" />
+        <label class="sr-only" for="newDisease">Bệnh</label>
+        <input id="newDisease" class="modal__input" type="text" placeholder="Bệnh (ví dụ: Viêm phổi)" />
+        <label class="sr-only" for="newUnderlying">Bệnh nền</label>
+        <input id="newUnderlying" class="modal__input" type="text" placeholder="Bệnh nền (ví dụ: Tiểu đường)" />
+        <label class="sr-only" for="newAdmissions">Số lần nhập viện</label>
+        <input id="newAdmissions" class="modal__input" type="number" min="0" placeholder="Số lần nhập viện" />
+        <label class="sr-only" for="newSeverity">Mức độ nghiêm trọng</label>
+        <select id="newSeverity" class="modal__input">
+          <option value="0">Không nghiêm trọng</option>
+          <option value="1">Nghiêm trọng</option>
+        </select>
+      </div>
+      <div class="modal__actions">
+        <button id="newCancel" class="chip" aria-label="Hủy">Hủy</button>
+        <button id="newSubmit" class="composer__send" aria-label="Tính nguy cơ">Tính nguy cơ</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Modal lựa chọn ngay khi vào -->
+  <div id="choiceModal" class="modal" role="dialog" aria-modal="true" aria-labelledby="choiceTitle" aria-hidden="true">
+    <div class="modal__dialog">
+      <h2 id="choiceTitle" class="modal__title">Bạn là bệnh nhân cũ hay mới?</h2>
+      <p class="modal__desc">Chọn một trong hai để hệ thống hỗ trợ nhanh hơn.</p>
+      <div class="modal__actions">
+        <button id="choiceOld" class="chip">Bệnh nhân cũ</button>
+        <button id="choiceNew" class="composer__send">Bệnh nhân mới</button>
+      </div>
+    </div>
+  </div>
+  </body>
+</html>
