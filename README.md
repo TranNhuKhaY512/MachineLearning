@@ -1,4 +1,4 @@
-# MachineLearning
+
 ## Hệ Thống Dự Đoán Khả Năng Tái Nhập Viện (Bệnh Tiêu Hóa & Tuần Hoàn)
 #### Đồ án môn học: Học Máy Ứng Dụng 
 #### Ngành: Trí Tuệ Nhân Tạo 
@@ -38,8 +38,8 @@ Dự án này là một hệ thống ứng dụng học máy nhằm dự đoán 
 #### Hướng dẫn cài đặt và chạy
 1. Clone repository:
 ```Bash
-git clone [Nhập link GitHub dự án của bạn vào đây]
-cd [Tên thư mục dự án]
+git clone https://github.com/TranNhuKhaY512/MedRisk_AI_Readmission_Predictor.git
+cd MedRisk_AI_Readmission_Predictor
 ```
 2. Thiết lập môi trường ảo và cài đặt thư viện:
 - Chạy lệnh sau để cài đặt các gói cần thiết:
