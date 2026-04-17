@@ -8,7 +8,7 @@ import os, re
 
 # ===== GOOGLE GEMINI CONFIG =====
 # LƯU Ý: VÌ BẠN ĐANG CHẠY CỤC BỘ, HÃY ĐẢM BẢO BIẾN MÔI TRƯỜNG GEMINI_API_KEY ĐÃ ĐƯỢC THIẾT LẬP
-GEMINI_API_KEY = os.getenv("GEMINI_API_KEY", "YOUR API KEY")
+GEMINI_API_KEY = os.getenv("GEMINI_API_KEY")
 genai.configure(api_key=GEMINI_API_KEY)
 
 # ===== BẮT ĐẦU SỬA ĐỔI (YÊU CẦU ĐỊNH DẠNG MỚI) =====
